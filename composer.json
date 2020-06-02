@@ -1,0 +1,25 @@
+{
+  "name": "plesk/ext-grafana-integration-example",
+  "config": {
+    "vendor-dir": "src/plib/vendor",
+    "platform": {
+      "php": "7.1"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "PleskExt\\GrafanaIntegrationExample\\": "modules/grafana-integration-example/library/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PleskExt\\GrafanaIntegrationExample\\": "src/plib/library/"
+    }
+  },
+  "require": {
+    "php": "^7.1"
+  },
+  "require-dev": {
+    "plesk/pm-api-stubs": "^18.0"
+  }
+}

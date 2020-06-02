@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+  <id>grafana-integration-example</id>
+  <name>Grafana Integration Example</name>
+  <description>Example of integration with the Grafana extension.</description>
+  <version>1.0</version>
+  <release>1</release>
+  <vendor/>
+  <url>https://www.plesk.com</url>
+  <plesk_min_version>18.0.20</plesk_min_version>
+</module>

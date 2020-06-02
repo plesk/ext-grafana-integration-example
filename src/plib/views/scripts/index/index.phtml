@@ -1,0 +1,169 @@
+<style type="text/css">
+    .gae__columns {
+        display: flex;
+        margin-left: -16px;
+    }
+    .gae__column {
+        width: 50%;
+        padding-left: 16px;
+    }
+    .gae__preview {
+        border: 1px solid #e8e8e8;
+        border-radius: 3px;
+        background-color: #fff;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    .gae__dashboard {
+        width: 100%;
+        height: 700px;
+    }
+    .gae__panel {
+        width: 100%;
+        height: 300px;
+    }
+    .gae__form_field {
+        display: flex;
+        margin-bottom: 16px;
+    }
+    .gae__form_label {
+        display: inline-block;
+        width: 150px;
+        padding-right: 16px;
+    }
+    .gae__form_input {
+        flex: auto;
+    }
+    .gae__form_footer {
+        padding: 20px 0 0 166px;
+    }
+    .gae__form_button {
+        display: inline-block;
+        box-sizing: border-box;
+        min-height: 28px;
+        min-width: 70px;
+        margin: 0;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 2px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 16px;
+        background-color: #ececec;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+        transition: background-color 0.18s;
+    }
+    .gae__form_button:hover,
+    .gae__form_button:focus {
+        background-color: #dedede;
+    }
+    .gae__form_button:active {
+        background-color: #ccc;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.18);
+    }
+    .gae__form_button[disabled] {
+        color: #222;
+        background-color: #ececec;
+        cursor: not-allowed;
+        opacity: 0.47;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+    }
+</style>
+
+<div class="gae__columns">
+    <div class="gae__column">
+        <h3>Dashboard:</h3>
+        <div class="gae__preview">
+            <iframe
+                src="/modules/grafana/d/grafana-integration-example/test-graph?theme=light"
+                id="gae_dashboard"
+                class="gae__dashboard"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-pointer-lock"
+            ></iframe>
+        </div>
+    </div>
+    <div class="gae__column">
+        <h3>Single panel:</h3>
+        <div class="gae__preview">
+            <iframe
+                src="/modules/grafana/p/grafana-integration-example/test-graph/1?theme=light"
+                id="gae_panel"
+                class="gae__panel"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-pointer-lock"
+            ></iframe>
+        </div>
+
+        <h3>Settings:</h3>
+        <form id="gae_settings" class="gae__form">
+            <div class="gae__form_field">
+                <div class="gae__form_label">
+                    <label for="some-field">Panel Title Prefix</label>
+                </div>
+                <div class="gae__form_input">
+                    <input type="text" name="settings[panel_title_prefix]" value="<?= $this->settings['panel_title_prefix'] ?>" />
+                </div>
+            </div>
+            <div class="gae__form_field">
+                <div class="gae__form_label">
+                    <label for="some-field">Data Min Value</label>
+                </div>
+                <div class="gae__form_input">
+                    <input type="number" name="settings[data_min_value]" value="<?= $this->settings['data_min_value'] ?>" step="0.5" />
+                </div>
+            </div>
+            <div class="gae__form_field">
+                <div class="gae__form_label">
+                    <label for="some-field">Data Max Value</label>
+                </div>
+                <div class="gae__form_input">
+                    <input type="number" name="settings[data_max_value]" value="<?= $this->settings['data_max_value'] ?>" step="0.5" />
+                </div>
+            </div>
+            <div class="gae__form_field">
+                <div class="gae__form_label">
+                    <label for="some-field">Data Start Value</label>
+                </div>
+                <div class="gae__form_input">
+                    <input type="number" name="settings[data_start_value]" value="<?= $this->settings['data_start_value'] ?>" step="0.5" />
+                </div>
+            </div>
+            <div class="gae__form_footer">
+                <button id="gae-form-update-btn" class="gae__form_button" type="button">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var EXT_BASE_URI = '/modules/grafana-integration-example/index.php';
+    var updateBtn = document.getElementById('gae-form-update-btn');
+    updateBtn.onclick = function() {
+        updateBtn.disabled = true;
+        sendForm(EXT_BASE_URI + '/index/update-settings', document.getElementById('gae_settings'), function() {
+            document.getElementById('gae_dashboard').src += '';
+            document.getElementById('gae_panel').src += '';
+            updateBtn.disabled = false;
+        }, function() {
+            updateBtn.disabled = false;
+        });
+    };
+
+    function sendForm(url, form, successCb, errorCb) {
+        var req = new XMLHttpRequest();
+        req.onload = function() {
+            if (req.status === 200) {
+                successCb(req.response);
+            } else {
+                errorCb();
+                alert('Update failed: ' + req.statusText + '.');
+            }
+        };
+        req.onerror = function() {
+            errorCb();
+            alert('Update failed: Network error.');
+        };
+        req.open('POST', url, true);
+        req.responseType = 'json';
+        req.send(new FormData(form));
+    }
+</script>
